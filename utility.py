@@ -1,12 +1,9 @@
-import numpy as np 
-import pandas as pd
-import os
+import numpy as np
 from collections import Counter
 
 # extract 7997 most common words
 #df = pd.read_csv('train.txt',sep='\n')
 #df = np.array(df)
-
 with open ("train.txt", "r") as myfile:
     data=myfile.read().replace('\n', '').split(' ')
 
@@ -27,6 +24,13 @@ def clean(fpath):
 		for i, sentence in enumerate(data):
 			data[i] = "START "+sentence+ " END"
 		return data
+def tanh(x):
+	return np.tanh(x)
+	
+def softmax(x):
+    """Compute softmax values for each sets of scores in x."""
+    e_x = np.exp(x - np.max(x))
+    return e_x / e_x.sum()
 
 # data = clean('train.txt')
 

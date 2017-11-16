@@ -18,6 +18,7 @@ class NLM(object):
 
 	def train(self, epochs=100):
 		return None
+
 batchsize = 20
 X = np.zeros((48, batchsize )) #some tests
 model = NLM()

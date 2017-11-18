@@ -138,4 +138,4 @@ def crossEntropy(a,y): #if we use the cross entropy for a minibatch, how?
 	return (-1/len(y))*np.sum(y*np.log(a)+(1-y)*np.log(1-a))
 
 def perplexity(a,y):
-	return crossEntropy(a,y), np.exp2(crossEntropy(a,y))
+	return np.exp2(crossEntropy(a,y))

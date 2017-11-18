@@ -2,6 +2,45 @@ import numpy as np
 from collections import Counter
 import matplotlib.pyplot as plt
 
+
+# vocab = {}
+# def buildvocab():
+#   global vocab
+
+#   with open ("val.txt") as lines:
+#     for line in lines:
+#       line = line.rstrip()
+#       words = line.split(" ")
+#       for word in words:
+#         word = word.lower()
+#         vocab[word] = vocab.get(word,0)+1
+
+
+#   vocab = sorted(vocab.iteritems(), key = lambda (k,v): (v,k), reverse = True)
+#   vocab = dict(vocab[:7997])
+
+# buildvocab()
+
+
+# def process_file(filetype):
+#   file = open(filetype+"-new.txt", "w+")
+#   with open(filetype+".txt") as lines:
+#     for line in lines: 
+#       line =line.rstrip()
+#       temp = ["START"]
+#       words = line.split(" ")
+#       for word in words:
+#         word = word.lower()
+#         if word in vocab:
+#           temp.append(word)
+#         else:
+#           temp.append("UNK")
+#       temp.append("END\n")
+#       file.write(" ".join(temp))
+#   file.close()
+
+# process_file("val")
+
 def lookupTable(data): #create lookup table of most frequent word
 	freqs = Counter(data)
 	#print freqs
@@ -96,3 +135,5 @@ def softmax(x):
 def crossEntropy(a,y): #if we use the cross entropy for a minibatch, how?
 	return (-1/len(y))*np.sum(y*np.log(a)+(1-y)*np.log(1-a)) 
 
+def perplexity(a,y):
+	return 2**crossEntropy(a,y)

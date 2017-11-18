@@ -219,7 +219,7 @@ def train(): #where is the data being passed in?
   beta1 = 0.
   gamma2 = 1.
   beta2 = 0.
-  
+
   idx = range(grams_train.shape[0])
   train_loss = []
   valid_loss = []
@@ -267,10 +267,10 @@ def train(): #where is the data being passed in?
       W1[w2] -= r * delta_e[:,l_embed:2*l_embed]
       W1[w3] -= r * delta_e[:,2*l_embed:3*l_embed]
 
-      W3 -= r * delta_w3 / batch
-      W2 -= r * delta_w2 / batch
-      b3 -= r * delta_b3 / batch
-      b2 -= r * delta_b2 / batch
+      W3 -= r * delta_w3 / batch 
+      W2 -= r * delta_w2 / batch 
+      b3 -= r * delta_b3 / batch 
+      b2 -= r * delta_b2 / batch 
       gamma1 -= r * delta_gamma1
       beta1 -= r * delta_beta1
       gamma2 -= r * delta_gamma2

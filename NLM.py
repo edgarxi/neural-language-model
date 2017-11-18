@@ -53,7 +53,7 @@ class NLM(object):
 			mini_batches = [
 				X[k:k+batchsize]
 				for k in xrange(0, n, batchsize)]
-			#np.random.shuffle(mini_batches)
+			np.random.shuffle(mini_batches)
 			for mini_batch in mini_batches:
 				self.update_minibatch(mini_batch, len(mini_batch))
 			#print "validation perplexity: {}".format(self.acc(Val))
@@ -96,13 +96,12 @@ class NLM(object):
 			partial_b2 = np.sum(partial_B,axis=0)
 			#print np.shape(partial_b2)
 			#assert np.shape(partial_b2) == np.shape(self.bias2)
-
 			#print np.shape(partial_b2)
 			partial_O =  np.dot(partial_B,self.U.T) # (128xbatch) 
 
 			assert np.shape(partial_O) == np.shape(O)
 			#print np.shape(partial_O), np.shape(e)
-			
+
 			partial_H = np.dot(e.T, partial_O)
 			
 			assert np.shape(partial_H) == np.shape(self.H) #yes
@@ -127,7 +126,7 @@ class NLM(object):
 			#print np.shape(self.C[w1]), np.shape(partial_X[:,self.dim])
 			# C 8,000 x 48 
 			# partial 
-			self.C[w1] -= lr*partial_X[:,:self.dim]/ batchsize #it might be this sketchy transpose
+			self.C[w1] -= lr*partial_X[:,:self.dim]/ batchsize 
 			self.C[w2] -= lr*partial_X[:,self.dim:2*self.dim]/ batchsize#[:,self.dim:2*self.dim]
 			self.C[w3] -= lr*partial_X[:,2*self.dim:3*self.dim] / batchsize#[:,2*self.dim:3*self.dim]
 

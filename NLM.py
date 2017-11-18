@@ -14,15 +14,18 @@ class NLM(object):
 		self.C = np.random.uniform(-a1, a1, (vocabSize, dim))
 		# need a word vector representer
 		self.H = np.random.uniform(-a1, a1, (nwords*dim,nhidden,)) #(48x128)
-		self.bias1 = np.random.uniform(-a1, a1, (nhidden)) #128xbatch size	
+		self.bias1 = np.zeros(nhidden) #128xbatch size	
 		self.U = np.random.uniform(-a1, a1, (nhidden,vocabSize)) #
-		self.bias2 = np.random.uniform(-a1, a1, (vocabSize))
+		self.bias2 = np.zeros(vocabSize)#np.random.uniform(-a1, a1, (vocabSize))
 		self.dim = dim
+		self.perp = []
+		self.loss = []
+
 	def forwardProp(self, X):
-		O = np.dot(self.H, X.T)+self.bias1 #these are correct i think #128 x bsize
+		O = np.dot(X, self.H)+self.bias1 #these are correct i think
 		#A = np.tanh(O) # tanh layer
-		B = np.dot(self.U, O)+self.bias2 #8000x20 
-		Y = utility.softmax(B) #8000x20 or 8,000 by vocab 86402 rn
+		B = np.dot(O,self.U)+self.bias2
+		Y = utility.softmax(B) # 8,000 by 20
 		return Y
 
 	def acc(self, X):
@@ -36,15 +39,14 @@ class NLM(object):
 		c2 = self.C[w2] #dimensions: batch_size x depth 
 		c3 = self.C[w3]
 		e = np.concatenate((c1, np.concatenate((c2, c3), axis=1)), axis=1) #batch_size x 3D generated 
-		e = e.T
 		# ____________________________________forward propogation step__________________________________
 		# O = np.dot(self.H, e.T)+self.bias1 #these are correct i think
 		# #A = np.tanh(O) # tanh layer
 		# B = np.dot(self.U, O)+self.bias2
 		# Y = utility.softmax(B) # 8,000 by 20
 		Y = self.forwardProp(e)
-		print len(X)
-		return utility.perplexity(Y, T)/len(X)
+		#print len(X)
+		return utility.perplexity(Y, T)
 
 	def train(self, X, Val, epochs=100, batchsize = 20): #where does the indexing go?
 		n = len(X)
@@ -55,8 +57,9 @@ class NLM(object):
 				for k in xrange(0, n, batchsize)]
 			np.random.shuffle(mini_batches)
 			for mini_batch in mini_batches:
-				self.update_minibatch(mini_batch, len(mini_batch))
-			#print "validation perplexity: {}".format(self.acc(Val))
+				self.update_minibatch(mini_batch, lr = 0.001, batchsize= len(mini_batch))
+			loss = self.acc(Val)
+			print "validation perplexity: {}".format(self.acc(Val))
 
 	def update_minibatch(self, X, lr = 0.001, batchsize=20):
 			w1 = X[:,0] # batch_size x 1
@@ -82,10 +85,10 @@ class NLM(object):
 			B = np.dot(O,self.U)+self.bias2
 			Y = utility.softmax(B) # 8,000 by 20
 			#Y = self.forwardProp(e)
-			loss = -np.sum(np.log(Y[np.arange(w1.shape[0]),w4]))
+			#loss = -np.sum(np.log(Y[np.arange(w1.shape[0]),w4]))
   			#loss /= w1.shape[0]
 			#utility.crossEntropy(Y, T)/batchsize
-			print "perplexity: {}".format(loss)
+			#print "perplexity: {}".format(loss)
 
 			# _____________________________________backpropagation step __________________________________
 			#i think in most likelihood the problem lies here, but I can't see it..

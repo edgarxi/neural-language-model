@@ -245,9 +245,9 @@ def train(): #where is the data being passed in?
 			act1 = h1
 			h2, cache2 = norm(act1.dot(W3) + b3, gamma2, beta2)
 			s = softmax(h2)
-
+			
 			total_sum += -np.sum(np.log(s[np.arange(w1.shape[0]), w4]))
-
+			
 			delta_h2 = s
 			delta_h2[np.arange(s.shape[0]), w4] -= 1.0
 			delta_h2, delta_gamma2, delta_beta2 = backnorm(delta_h2, cache2)

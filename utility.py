@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy as np
 from collections import Counter
 import matplotlib.pyplot as plt
@@ -134,7 +135,7 @@ def softmax(x):
 	return e_x / np.sum(e_x, axis=1)[:,None]
 
 def crossEntropy(a,y): #if we use the cross entropy for a minibatch, how?
-	return (-1/len(y))*np.sum(y*np.log(a)+(1-y)*np.log(1-a)) 
+	return (-1/len(y))*np.sum(y*np.log(a)+(1-y)*np.log(1-a))
 
 def perplexity(a,y):
-	return 2**crossEntropy(a,y)
+	return crossEntropy(a,y), np.exp2(crossEntropy(a,y))

@@ -113,6 +113,7 @@ def parse(fpath):
 	res =  np.array(indices) #
 	#print "shape of the res thing {} ".format(np.shape(res))
 	#print res[:10]
+	#print indices[:20]
 	return res
 	#print indices[:20]
 	#print inds[:20]
@@ -129,8 +130,8 @@ def tanh(x):
 
 def softmax(x):
 	"""Compute softmax values for each sets of scores in x."""
-	e_x = np.exp(x - np.max(x))
-	return e_x / e_x.sum()
+	e_x = np.exp(x)
+	return e_x / np.sum(e_x, axis=1)[:,None]
 
 def crossEntropy(a,y): #if we use the cross entropy for a minibatch, how?
 	return (-1/len(y))*np.sum(y*np.log(a)+(1-y)*np.log(1-a)) 

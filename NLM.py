@@ -130,7 +130,7 @@ class NLM(object):
 			partial_b2 = np.sum(partial_B,axis=0)
 			deltaA = 1
 			if self.nonlinear:
-				deltaA = (1-A)
+				deltaA = (1-A**2)
 			partial_O =  np.dot(partial_B,self.U.T)*A # (128xbatch) 
 			partial_H = np.dot(e.T, partial_O)
 			partial_X = np.dot(partial_O, self.H.T )  #???????? vocab X 16 
@@ -152,5 +152,5 @@ Val = utility.parse("val-new.txt")
 model = NLM(nonlinear=True)
 #model.update_minibatch(X)
 print "dimensions OK!"
-model.train(X, Val, epochs = 100)
+model.train(X, Val, epochs = 5)
 model.visualize_()

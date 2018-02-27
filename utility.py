@@ -22,7 +22,6 @@ import matplotlib.pyplot as plt
 
 # buildvocab()
 
-
 # def process_file(filetype):
 #   file = open(filetype+"-new.txt", "w+")
 #   with open(filetype+".txt") as lines:
@@ -50,7 +49,7 @@ def lookupTable(data): #create lookup table of most frequent word
 	#print mostCommon
 	lookupTable = dict(zip(mostCommon, range(8000)))
 	#print freqs.most_common(50)
-	return lookupTable
+	return mostCommon, lookupTable
 
 def clean(fpath):
 	with open(fpath, "r") as myfile:
@@ -89,7 +88,7 @@ def parse(fpath):
 
 	#print data
 
-	tab = lookupTable(data)
+	wordz, tab = lookupTable(data)
 	#print tab
 	#data_cleaned = clean('train.txt') #clean 
 	
@@ -101,6 +100,8 @@ def parse(fpath):
 	stop_indices = [i for i,x in enumerate(data) if x=="END"]
 	grams =  ngrams(data, start_indices, stop_indices)
 	#print grams
+	#gramfreqs = Counter(grams)
+	#print gramfreqs.most_common(50)
 	def words_to_indices(grams):
 		res = []
 		for sentence in grams:
@@ -115,7 +116,8 @@ def parse(fpath):
 	#print "shape of the res thing {} ".format(np.shape(res))
 	#print res[:10]
 	#print indices[:20]
-	return res
+	#wordlist = []
+	return tab, wordz, res
 	#print indices[:20]
 	#print inds[:20]
 
@@ -123,6 +125,17 @@ def parse(fpath):
 	
 #parse("train-new.txt")
 
+def generate_index_list(sentence):
+	with open ("train-new.txt", "r") as myfile:
+		data=myfile.read().replace('\n', ' ').split(' ')
+
+	_, tab = lookupTable(data)
+	sentenceList = []
+	for word in sentence.split(' '):
+		#print word
+		sentenceList.append(tab[word])
+	return sentenceList
+#print generate_index_list("government of the")
 def generate_ngram_arrays(ngrams):
 	return 0
 
@@ -131,11 +144,21 @@ def tanh(x):
 
 def softmax(x):
 	"""Compute softmax values for each sets of scores in x."""
-	e_x = np.exp(x)
-	return e_x / np.sum(e_x, axis=1)[:,None]
+	e_x = np.exp(x - np.max(x, axis=1, keepdims=True))
+	return e_x / np.sum(e_x, axis=1, keepdims=True)
 
-def crossEntropy(a,y): #if we use the cross entropy for a minibatch, how?
-	return (-1/len(y))*np.sum(y*np.log(a)+(1-y)*np.log(1-a))
+def crossEntropy(y,t): #if we use the cross entropy for a minibatch, how?
+	epsilon = 10**-9
+	return -1/len(t) *np.sum(t *np.log2(y)) #batchsize x  8000
+	#return (-1/len(t))*np.sum(t*np.log(y+epsilon)+(1-t)*np.log(1-y+epsilon))
 
-def perplexity(a,y):
-	return np.exp2(crossEntropy(a,y))
+def perplexity(y,t):
+	#print crossEntropy(y,t)
+	# epsilon = 10**-9
+	# y = np.clip(y, 1e-15, 1 - 1e-15)
+	# CE = - t * np.log2(y) - (1 - t) * np.log(1 - y) /len(t[1])
+	
+	perplexity = np.exp2(crossEntropy(y,t)) 
+	# perplexity /= t.shape[1]
+	# perplexity = np.exp2(perplexity)
+	return perplexity
